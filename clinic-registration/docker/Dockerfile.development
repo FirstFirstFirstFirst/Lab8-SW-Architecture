@@ -1,0 +1,6 @@
+FROM node:lts-alpine3.18
+WORKDIR /server
+COPY package.json ./
+RUN npm install
+#RUN npx prisma generate
+CMD npx supervisor server.js

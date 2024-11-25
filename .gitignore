@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+*/node_modules/
+yarn.lock
+package-lock.json
+
+# Build outputs
+*/build/
+*/dist/
+*/.next/
+
+# Environment variables
+.env
+.env.local
+*/.env
+*/.env.local
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*/logs/
+*.log
+npm-debug.log*
+
+# Testing
+*/coverage/
+.nyc_output/
+
+# Cache directories
+.cache/
+.npm/
+.eslintcache
+
+# Database
+pgdata/
+*/pgdata/
+**/pgdata
+**/pgdata/**

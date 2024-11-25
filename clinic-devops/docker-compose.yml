@@ -1,0 +1,58 @@
+version: "3.9"
+services:
+  clinic-gateway:
+    container_name: clinic-gateway
+    image: "nginx:stable-bullseye"
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./nginx_gateway_development.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - clinic-frontend
+      - clinic-registration
+  clinic-db:
+    container_name: clinic-db
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/pgdata
+      - ./create-db.sql:/docker-entrypoint-initdb.d/create_database.sql
+
+  clinic-frontend:
+    container_name: clinic-frontend
+    build: 
+      context: ../clinic-frontend
+      dockerfile: ./docker/Dockerfile.development
+    volumes:
+      - "../clinic-frontend:/app"
+      - "/app/node_modules"
+    expose:
+      - "3000"
+    environment:
+      - REACT_APP_BASE_URL=${BASE_URL}
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - WDS_SOCKET_HOST=localhost
+      - WDS_SOCKET_PORT=9000
+      - WDS_SOCKET_PATH=/wds
+
+  clinic-registration:
+    container_name: clinic-registration
+    build:
+      context: ../clinic-registration
+      dockerfile: ./docker/Dockerfile.development
+    volumes:
+      - "../clinic-registration:/server"
+      - "/server/node_modules"
+    expose:
+      - "8000"
+    links:
+      - clinic-db
+    environment:
+      - PORT=8000
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@clinic-db/registration
+
