@@ -4,6 +4,8 @@ import "../App.css"
 import { Typography, Button, Form, InputNumber, Input, Select, Spin, notification } from 'antd';
 import { URL_REGISTRATION } from '../constants/urls';
 
+import NotificationToast from '../components/NotificationToast';
+
 const { Title } = Typography;
 
 const VISIT_TYPES = ['OPD', 'ER']
@@ -45,6 +47,7 @@ function RegistrationView() {
         <Typography>
           <Title level={2}>Registration</Title>
         </Typography>
+        <NotificationToast />
         <Spin spinning={loading} tip='loading...'>
           <Form
             form={regForm}

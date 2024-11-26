@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import DiagnosisDialog from '../components/DiagnosisDialog';
 import { URL_EXAMINATION } from '../constants/urls';
+import NotificationToast from '../components/NotificationToast';
 
 const { Title } = Typography;
 
@@ -86,6 +87,7 @@ function ExaminationView() {
       <Typography>
         <Title level={2}>Examination Queue</Title>
       </Typography>
+      <NotificationToast onNotify={fetchQueue}/>
       <Table 
         columns={columns} 
         dataSource={data} 

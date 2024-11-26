@@ -1,46 +1,112 @@
 # Dependencies
 node_modules/
 */node_modules/
+**/node_modules/
 yarn.lock
 package-lock.json
+yarn-error.log
 
 # Build outputs
 */build/
 */dist/
 */.next/
+**/.next
+**/build
+**/dist
 
 # Environment variables
 .env
 .env.local
+.env.development
+.env.test
+.env.production
 */.env
-*/.env.local
+*/.env.*
+**/.env
+**/.env.*
 
 # IDE and Editor files
 .idea/
 .vscode/
 *.swp
 *.swo
+*.swn
+*.bak
+*.sublime*
+.project
+.classpath
+.settings/
+*.code-workspace
 
 # Operating System files
 .DS_Store
 Thumbs.db
+*.tmp
+*.temp
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
 
 # Logs
+logs/
 */logs/
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Testing
 */coverage/
+**/coverage
 .nyc_output/
+*.lcov
+.coverage
+.coverage.*
 
 # Cache directories
 .cache/
 .npm/
 .eslintcache
+.stylelintcache
+*.tsbuildinfo
+.next/
+.nuxt/
+.vuepress/dist
+.serverless/
+.fusebox/
+.dynamodb/
 
 # Database
 pgdata/
 */pgdata/
 **/pgdata
 **/pgdata/**
+*.sqlite
+*.sqlite3
+*.db
+
+# RabbitMQ
+rabbit_data/
+**/rabbit_data/
+*.erlang.cookie
+**/.erlang.cookie
+rabbit_data/.erlang.cookie
+
+# Prisma
+**/prisma/migrations/
+**/.prisma/client/
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+.vercel
+*.tgz

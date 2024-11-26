@@ -4,6 +4,7 @@ import axios from 'axios'
 import { FormOutlined, CommentOutlined } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import RegistrationView from './views/RegistrationView';
+import ExaminationView from './views/ExaminationView';
 
 const { Header, Content } = Layout;
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL
@@ -17,7 +18,13 @@ function App() {
       key: 'reg',
       icon: <FormOutlined />,
       component: <RegistrationView/>,
-    }
+    },
+     {
+      label: 'Examination',
+      key: 'exam',
+      icon: <CommentOutlined />,
+      component: <ExaminationView/>,
+    },
   ]
 
   const [currentView, setCurrentView] = React.useState(DEFAULT_VIEW)

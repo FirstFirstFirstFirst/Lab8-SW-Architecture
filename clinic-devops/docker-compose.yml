@@ -1,5 +1,18 @@
 version: "3.9"
 services:
+  clinic-broker:
+    container_name: clinic-broker
+    image: rabbitmq:3.12-management-alpine
+    volumes:
+      - "./rabbit_data:/var/lib/rabbitmq/"
+      - "./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${BROKER_USER}
+      - RABBITMQ_DEFAULT_PASS=${BROKER_PASSWORD}
+
   clinic-gateway:
     container_name: clinic-gateway
     image: "nginx:stable-bullseye"
@@ -10,6 +23,7 @@ services:
     depends_on:
       - clinic-frontend
       - clinic-registration
+      
   clinic-db:
     container_name: clinic-db
     image: postgres:16-alpine
@@ -33,6 +47,9 @@ services:
     expose:
       - "3000"
     environment:
+      - REACT_APP_WS_NOTIFICATION_URL=${BASE_WS_URL}/ws-notification
+      - REACT_APP_EXCH_NEW_PATIENT=${EXCH_NEW_PATIENT}
+      - REACT_APP_EXCH_EXAMINED=${EXCH_EXAMINED}
       - REACT_APP_BASE_URL=${BASE_URL}
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
@@ -52,7 +69,47 @@ services:
       - "8000"
     links:
       - clinic-db
+      - clinic-broker
     environment:
       - PORT=8000
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@clinic-db/registration
+      - BROKER_URL=amqp://${BROKER_USER}:${BROKER_PASSWORD}@clinic-broker/
+      - EXCH_NEW_PATIENT=${EXCH_NEW_PATIENT}
+
+  clinic-examination:
+    container_name: clinic-examination
+    build:
+      context: ../clinic-examination
+      dockerfile: ./docker/Dockerfile.development
+    volumes:
+      - "../clinic-examination:/server"
+      - "/server/node_modules"
+    expose:
+      - "8000"
+    links:
+      - clinic-db
+      - clinic-broker
+    environment:
+      - PORT=8000
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@clinic-db/examination
+      - BROKER_URL=amqp://${BROKER_USER}:${BROKER_PASSWORD}@clinic-broker/
+      - EXCH_NEW_PATIENT=${EXCH_NEW_PATIENT}
+      - EXCH_EXAMINED=${EXCH_EXAMINED}
+  clinic-web-notification:
+    container_name: clinic-web-notification
+    build:
+      context: ../clinic-web-notification
+      dockerfile: ./docker/Dockerfile.development
+    volumes:
+      - "../clinic-web-notification:/server"
+      - "/server/node_modules"
+    expose:
+      - "8000"
+    links:
+      - clinic-broker
+    environment:
+      - PORT=8000
+      - BROKER_URL=amqp://${BROKER_USER}:${BROKER_PASSWORD}@clinic-broker/
+      - EXCH_NEW_PATIENT=${EXCH_NEW_PATIENT}
+      - EXCH_EXAMINED=${EXCH_EXAMINED}
 

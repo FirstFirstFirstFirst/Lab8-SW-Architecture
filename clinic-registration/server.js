@@ -1,8 +1,11 @@
 const { PrismaClient } = require("@prisma/client");
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT;
+const BROKER_URL = process.env.BROKER_URL
+const EXCH_NEW_PATIENT = process.env.EXCH_NEW_PATIENT
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -15,9 +18,13 @@ if (process.env.NODE_ENV !== 'production') {
 
 const prisma = new PrismaClient()
 
+const publisher = require('./publisher')
+
 app.post('/api/registration/new-patient/', async (req, res) => {
   try {
     const patient = await prisma.Patient.create({data: req.body,})
+    const channel = await publisher.startPublisher(BROKER_URL)
+    publisher.publishMessage(channel, EXCH_NEW_PATIENT, JSON.stringify(patient))
     res.json(patient)
   }catch(error) {
     res.status(400).json(error);
@@ -28,7 +35,7 @@ app.get('/api/registration/patient/:pId', async(req, res) => {
   try {
     const patient = await prisma.Patient.findUnique({
       where: {
-        id: parseInt(req.param('pId'))
+        id: parseInt(req.params.pId)
       }
     })
     res.json(patient)

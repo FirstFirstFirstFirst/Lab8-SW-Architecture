@@ -1,7 +1,7 @@
 {
-  "name": "clinic-registration",
+  "name": "clinic-examination",
   "version": "1.0.0",
-  "description": "Micro Clinic Reistration Module",
+  "description": "Micro Clinic Examination Service",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
